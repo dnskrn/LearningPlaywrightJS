@@ -241,3 +241,174 @@
         await popup.locator('#close-popup-button').click();
         // You can interact with the 'popup' Page object as you would with the main page.
         ```
+
+## II. Advanced Topics & Techniques:
+
+12. **How do you handle authentication in Playwright tests?**
+    * **Solution:** Playwright offers several ways to handle authentication:
+        * **`context.storageState([options])`:** This is the recommended approach. After manually logging in once in a setup step, you can save the browser context's storage state (cookies, local storage, etc.) to a file. In subsequent tests, you can load this saved state into a new browser context, effectively bypassing the login process. This is fast and reliable.
+        * **Programmatic Login:** You can automate the login process directly in your tests using Playwright's actions (`page.goto()`, `page.fill()`, `page.click()`). However, this can be slower and more prone to UI changes.
+        * **API-based Login:** If the application exposes an API for authentication, you can use Playwright's `browser.request` to authenticate programmatically and then set the necessary cookies or tokens in the browser context.
+
+13. **Explain how you can mock network requests and responses using Playwright. Why is this useful?**
+    * **Solution:** Playwright's `page.route(url, handler)` allows you to intercept network requests matching a specific URL (or pattern) and provide a custom response.
+    * **Why it's useful:**
+        * **Isolating Tests:** You can isolate your UI tests from the backend dependencies, making them faster and more reliable.
+        * **Testing Edge Cases and Errors:** You can simulate error responses or specific data scenarios that might be difficult to trigger in the actual application.
+        * **Improving Performance:** By mocking slow or external resources, you can speed up test execution.
+        * **Controlling Test Data:** You can ensure your tests are working with consistent and predictable data.
+    * **Example:**
+        ```javascript
+        await page.route('**/api/users', async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([{ id: 1, name: 'Mock User' }]),
+          });
+        });
+        await page.goto('/users');
+        // The page will now display the mocked user data.
+        ```
+
+14. **How can you intercept and modify network requests?**
+    * **Solution:** Similar to mocking, `page.route(url, handler)` can also be used to intercept and modify requests before they are sent. The `handler` function receives a `route` object, which provides methods to `continue()` the request (optionally with modified headers or body), `fulfill()` with a custom response, or `abort()` the request.
+    * **Example:**
+        ```javascript
+        await page.route('**/api/items/*', async (route) => {
+          const request = route.request();
+          const headers = { ...request.headers(), 'Authorization': 'Bearer my-test-token' };
+          await route.continue({ headers });
+        });
+        await page.goto('/items'); // All requests to /api/items/* will now have the added Authorization header.
+        ```
+
+15. **What is Playwright's Tracing feature? How can it be used for debugging?**
+    * **Solution:** Playwright's Tracing feature records a detailed log of everything that happens during a test execution, including browser actions, network requests, console logs, and screenshots at each step.
+    * **Debugging Usage:**
+        * **Step-by-step Replay:** You can replay the trace in the Playwright Inspector, stepping through each action and observing the state of the application at that point.
+        * **Network Inspection:** Examine all network requests and responses, including headers and bodies.
+        * **Console Logs:** View any `console.log` statements from the browser.
+        * **Screenshots:** See a visual snapshot of the page at each action.
+        * **Error Analysis:** Understand exactly what happened leading up to a test failure.
+        * **Performance Analysis:** Identify potential performance bottlenecks.
+    * Tracing can be enabled in the Playwright configuration or programmatically within your tests. You can then view the trace using the Playwright CLI (`npx playwright show-trace <trace_file>`).
+
+16. **How do you handle file uploads and downloads in Playwright?**
+    * **Solution:**
+        * **File Uploads:** Use the `locator.setInputFiles(files)` method on an `<input type="file">` element. The `files` argument can be a string (path to a single file) or an array of strings (paths to multiple files).
+            ```javascript
+            await page.locator('input[type="file"]').setInputFiles('path/to/your/file.pdf');
+            ```
+        * **File Downloads:** Use `page.on('download', async (download) => { ... })` to listen for download events. When an action triggers a download, the callback function will receive a `Download` object, which provides methods to get the downloaded file path (`download.path()`), save the file to a specific location (`download.saveAs(path)`), get the suggested filename (`download.suggestedFilename()`), and more. You typically use `Promise.all()` to wait for both the action that triggers the download and the `download` event.
+            ```javascript
+            const [download] = await Promise.all([
+              page.waitForEvent('download'),
+              page.locator('#download-button').click(),
+            ]);
+            const suggestedFilename = await download.suggestedFilename();
+            await download.saveAs(`downloads/${suggestedFilename}`);
+            ```
+
+17. **How can you handle dialogs (alert, confirm, prompt) in Playwright?**
+    * **Solution:** Playwright provides the `page.on('dialog', async (dialog) => { ... })` event listener to handle JavaScript dialogs. When a dialog appears, the callback function receives a `Dialog` object, which has properties like `type` (`alert`, `confirm`, `prompt`), `message`, and methods like `accept([promptText])` and `dismiss()`.
+    * **Example:**
+        ```javascript
+        page.on('dialog', async (dialog) => {
+          console.log(`Dialog type: ${dialog.type}, message: ${dialog.message}`);
+          if (dialog.type === 'confirm') {
+            await dialog.accept();
+          } else if (dialog.type === 'prompt') {
+            await dialog.accept('user input');
+          } else {
+            await dialog.dismiss();
+          }
+        });
+        await page.locator('#trigger-alert').click();
+        await page.locator('#trigger-confirm').click();
+        await page.locator('#trigger-prompt').click();
+        ```
+
+18. **How do you run Playwright tests in parallel? What are the benefits?**
+    * **Solution:** Parallel execution is configured in the `playwright.config.js` file using the `workers` option. You can set it to a number (e.g., `workers: 4` to run on 4 parallel processes) or a percentage of your CPU cores.
+    * **Benefits:**
+        * **Reduced Test Execution Time:** Running tests concurrently significantly speeds up the overall test suite execution, especially for large test sets.
+        * **Faster Feedback:** Developers and stakeholders get quicker feedback on the quality of the application.
+        * **Improved Efficiency:** Makes the testing process more efficient.
+    * Playwright automatically manages the distribution of test files across the specified number of workers. Using isolated `BrowserContext` for each worker ensures test independence.
+
+19. **How do you generate test reports with Playwright? What are some common reporters?**
+    * **Solution:** Playwright uses reporters to output test results. You configure the reporters in the `playwright.config.js` file's `reporter` option, which is an array of reporter names or configurations.
+    * **Common Reporters:**
+        * **`'list'` (default):** Outputs a simple list of test results to the console.
+        * **`'html'`:** Generates an interactive HTML report with detailed information about each test, including steps, screenshots, and traces. This is very useful for debugging and analysis.
+        * **`'junit'`:** Generates a JUnit XML report, which is a standard format often used for integration with CI/CD systems.
+        * **`'json'`:** Generates a JSON report containing the test results.
+        * You can also create custom reporters.
+
+20. **How do you configure Playwright tests (e.g., timeouts, base URL, browser launch options)?**
+    * **Solution:** Playwright tests are configured through the `playwright.config.js` file at the root of your project. This file exports a configuration object that allows you to set various options, including:
+        * **`timeout`:** The default timeout for actions and assertions (in milliseconds).
+        * **`expect`:** Configuration options for the built-in `expect` assertions (e.g., `timeout`).
+        * **`use`:** Options that apply to all tests, such as `baseURL`, `browserName`, `headless`, `viewport`, `storageState`, `trace`, `screenshot`, `video`, `slowMo`, `launchOptions` (for browser-specific launch arguments).
+        * **`projects`:** An array of project configurations, allowing you to define different settings for running tests on different browsers or environments.
+        * **`workers`:** The number of parallel workers to use.
+        * **`reporter`:** The list of reporters to use.
+        * **`testDir`:** The directory containing your test files.
+        * **`outputDir`:** The directory for test artifacts (screenshots, videos, traces).
+
+21. **How can you take screenshots and videos of your Playwright tests?**
+    * **Solution:**
+        * **Screenshots:**
+            * **On Failure:** Configure `'on'` for the `screenshot` option in `playwright.config.js` to automatically take screenshots of failing tests. You can also set it to `'off'` or `'only-on-failure'`.
+            * **Programmatically:** Use `await page.screenshot({ path: 'path/to/screenshot.png' })` to take a screenshot at a specific point in your test. You can customize options like `fullPage`.
+        * **Videos:**
+            * Configure `'on'` for the `video` option in `playwright.config.js` to record videos of test executions. You can set it to `'off'`, `'retain-on-failure'`, or `'on-first-retry'`. Videos are saved in the `test-results` directory.
+
+22. **How do you handle cross-browser testing strategies with Playwright?**
+    * **Solution:** Playwright makes cross-browser testing relatively straightforward due to its unified API. Common strategies include:
+        * **Running all tests on all supported browsers:** Configure multiple projects in `playwright.config.js`, each targeting a different browser (`chromium`, `firefox`, `webkit`).
+        * **Targeting specific browsers based on requirements:** Run tests against the browsers that are most critical for your application's user base.
+        * **Using conditional logic (if necessary):** In rare cases where browser-specific behavior needs to be handled differently, you can use `browserName()` to conditionally execute code. However, the goal should be to write tests that work consistently across browsers.
+        * **Analyzing reports across browsers:** Playwright's HTML report helps you compare test results across different browsers.
+
+23. **How can you integrate Playwright tests into a CI/CD pipeline?**
+    * **Solution:** Playwright tests can be easily integrated into most CI/CD platforms (e.g., Jenkins, GitLab CI, GitHub Actions, CircleCI). The general steps involve:
+        * **Setting up Node.js and Playwright in the CI/CD environment.**
+        * **Checking out your test code.**
+        * **Installing Playwright browsers:** Use `npx playwright install --with-deps` to install the necessary browser binaries.
+        * **Running your Playwright tests:** Execute your tests using the Playwright CLI command (e.g., `npx playwright test`).
+        * **Generating and publishing test reports:** Configure the `junit` or `html` reporter to generate reports that can be consumed by the CI/CD platform.
+        * **Handling test failures:** Configure the CI/CD pipeline to fail the build if any tests fail.
+
+24. **What are Playwright fixtures? How can they be used for setup and teardown?**
+    * **Solution:** Playwright fixtures are a powerful mechanism for managing test setup and teardown, sharing test state, and creating reusable test components. They are functions decorated with `@playwright/test` annotations.
+    * **Setup and Teardown:** Fixtures can define setup logic that runs before each test that uses them and teardown logic that runs after the test, regardless of its outcome. You can use `yield` within a fixture to separate the setup from the teardown. The value before `yield` is provided to the test, and the code after `yield` is the teardown.
+    * **Example:**
+        ```javascript
+        const { test } = require('@playwright/test');
+
+        const loggedInPage = test.extend({
+          page: async ({ page }, use) => {
+            await page.goto('/login');
+            await page.fill('#username', 'testuser');
+            await page.fill('#password', 'password');
+            await page.click('button[type="submit"]');
+            await page.waitForURL('/dashboard');
+            await use(page); // Provide the logged-in page to the test
+            await page.locator('#logout-button').click(); // Teardown
+          },
+        });
+
+        loggedInPage('can access dashboard', async ({ loggedInPage }) => {
+          await loggedInPage.locator('#dashboard-title').isVisible();
+        });
+        ```
+
+25. **How can you share state between tests using fixtures?**
+    * **Solution:** Playwright fixtures can share state at different scopes:
+        * **`scope: 'test'` (default):** A new instance of the fixture is created for each test that uses it.
+        * **`scope: 'worker'`:** A single instance of the fixture is created per worker process. This is useful for sharing resources that can be reused across tests within the same worker (e.g., a single browser instance).
+        * **`scope: 'session'`:** A single instance of the fixture is created for the entire test session. This is suitable for sharing expensive resources that should only be initialized once (e.g., a database connection).
+    * You can define the scope when extending the base `test` object.
+
+This covers the advanced topics. We're making good progress! Are you ready for the final set of questions focusing on testing strategies and best practices?

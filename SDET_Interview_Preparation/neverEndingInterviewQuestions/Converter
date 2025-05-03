@@ -1,0 +1,157 @@
+# Conversion Examples in Java and JavaScript
+
+## 1. Convert String to a List of Characters
+### Java
+```java
+String str = "example";
+List<Character> charList = str.chars()
+                              .mapToObj(c -> (char) c)
+                              .collect(Collectors.toList());
+```
+
+### JavaScript
+```javascript
+const str = "example";
+const charList = Array.from(str);
+```
+
+---
+
+## 2. Convert Iterator to a List
+### Java
+```java
+Iterator<String> iterator = Arrays.asList("a", "b", "c").iterator();
+List<String> list = new ArrayList<>();
+iterator.forEachRemaining(list::add);
+```
+
+### JavaScript
+```javascript
+// JavaScript does not have an Iterator like Java, but you can use a generator
+function* generator() {
+  yield "a";
+  yield "b";
+  yield "c";
+}
+const iterator = generator();
+const list = Array.from(iterator);
+```
+
+---
+
+## 3. Convert List to a Map
+### Java
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+Map<Integer, String> map = IntStream.range(0, list.size())
+                                    .boxed()
+                                    .collect(Collectors.toMap(i -> i, list::get));
+```
+
+### JavaScript
+```javascript
+const list = ["a", "b", "c"];
+const map = new Map(list.map((value, index) => [index, value]));
+```
+
+---
+
+## 4. Convert List to a Stream
+### Java
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+Stream<String> stream = list.stream();
+```
+
+### JavaScript
+```javascript
+// JavaScript does not have streams like Java, but you can use an array directly
+const list = ["a", "b", "c"];
+const stream = list; // Arrays are iterable in JavaScript
+```
+
+---
+
+## 5. Convert List to Set
+### Java
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+Set<String> set = new HashSet<>(list);
+```
+
+### JavaScript
+```javascript
+const list = ["a", "b", "c"];
+const set = new Set(list);
+```
+
+---
+
+## 6. Convert InputStream to String
+### Java
+```java
+InputStream inputStream = new ByteArrayInputStream("example".getBytes());
+String result = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+```
+
+### JavaScript
+```javascript
+// JavaScript does not have InputStream, but you can use fetch for streams
+const inputStream = new ReadableStream({
+  start(controller) {
+    controller.enqueue("example");
+    controller.close();
+  }
+});
+const reader = inputStream.getReader();
+let result = "";
+reader.read().then(({ value }) => result += value);
+```
+
+---
+
+## 7. Convert Set of String to Array of String
+### Java
+```java
+Set<String> set = new HashSet<>(Arrays.asList("a", "b", "c"));
+String[] array = set.toArray(new String[0]);
+```
+
+### JavaScript
+```javascript
+const set = new Set(["a", "b", "c"]);
+const array = Array.from(set);
+```
+
+---
+
+## 8. Convert String to Object
+### Java
+```java
+String json = "{\"key\":\"value\"}";
+ObjectMapper mapper = new ObjectMapper();
+Map<String, Object> object = mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+```
+
+### JavaScript
+```javascript
+const json = '{"key":"value"}';
+const object = JSON.parse(json);
+```
+
+---
+
+## 9. Convert String Value to Byte Value
+### Java
+```java
+String str = "example";
+byte[] byteArray = str.getBytes(StandardCharsets.UTF_8);
+```
+
+### JavaScript
+```javascript
+const str = "example";
+const byteArray = new TextEncoder().encode(str);
+```

@@ -412,3 +412,203 @@
     * You can define the scope when extending the base `test` object.
 
 This covers the advanced topics. We're making good progress! Are you ready for the final set of questions focusing on testing strategies and best practices?
+
+
+# Playwright Interview Questions and Solutions  
+
+## Questions and Solutions  
+
+### 1. How is Playwright different from other browser automation tools like Selenium?  
+**Solution:**  
+Playwright supports multiple browsers (Chromium, Firefox, WebKit) with a single API, provides built-in support for modern web features like shadow DOM and iframes, and offers better performance with headless execution.  
+
+### 2. What are the supported browsers in Playwright?  
+**Solution:**  
+Playwright supports Chromium, Firefox, and WebKit.  
+
+### 3. How do you install Playwright?  
+**Solution:**  
+Run the following command:  
+```bash  
+npm install playwright  
+```  
+
+### 4. What are the Key features of the Playwright test automation tool?  
+**Solution:**  
+- Cross-browser support  
+- Auto-waiting for elements  
+- Built-in test runner  
+- Network interception  
+- Emulation of devices  
+
+### 5. What are the different testing types the Playwright supports?  
+**Solution:**  
+- Functional testing  
+- End-to-end testing  
+- Visual regression testing  
+
+### 6. What is a Configuration File in Playwright Framework?  
+**Solution:**  
+A configuration file (e.g., `playwright.config.ts`) is used to define global settings like browser options, test directory, and timeouts.  
+
+### 7. What are some common locator strategies used in Playwright?  
+**Solution:**  
+- CSS selectors  
+- XPath  
+- Text selectors  
+- Role selectors  
+
+### 8. What are Playwright Selectors?  
+**Solution:**  
+Selectors are used to locate elements on a page. Playwright supports text, CSS, XPath, and custom selectors.  
+
+### 9. What languages does the Playwright tool support?  
+**Solution:**  
+Playwright supports JavaScript, TypeScript, Python, Java, and C#.  
+
+### 10. How to record and Play scripts in Playwright?  
+**Solution:**  
+Use the Playwright CLI to record scripts:  
+```bash  
+npx playwright codegen  
+```  
+
+### 11. What is the difference between `fill()` and `type()`?  
+**Solution:**  
+- `fill()`: Clears the input field and types the text.  
+- `type()`: Types the text without clearing the field.  
+
+### 12. What is the default timeout for the playwright page?  
+**Solution:**  
+The default timeout is 30 seconds.  
+
+### 13. What is the default timeout for assertions in Playwright?  
+**Solution:**  
+The default timeout for assertions is 5 seconds.  
+
+### 14. How do you verify a URL in Playwright?  
+**Solution:**  
+Use the `expect` assertion:  
+```javascript  
+await expect(page).toHaveURL('https://example.com');  
+```  
+
+### 15. How to perform click actions in Playwright?  
+**Solution:**  
+Use the `click()` method:  
+```javascript  
+await page.click('selector');  
+```  
+
+### 16. What are soft assertions?  
+**Solution:**  
+Soft assertions do not stop the test execution even if they fail.  
+
+### 17. What is the difference between `innerText()` and `textContent()` in Playwright?  
+**Solution:**  
+- `innerText()`: Returns visible text.  
+- `textContent()`: Returns all text, including hidden text.  
+
+### 18. What is the difference between `locator()` and `locateAll()`?  
+**Solution:**  
+- `locator()`: Finds a single element.  
+- `locateAll()`: Finds multiple elements.  
+
+### 19. What are the different commands used to select a dropdown list using Playwright?  
+**Solution:**  
+- `selectOption()`  
+- `click()` and `type()`  
+
+### 20. How to locate an element using compound selectors in the Playwright Framework?  
+**Solution:**  
+Use `>>` to combine selectors:  
+```javascript  
+await page.locator('div >> text="Submit"');  
+```  
+
+### 21. What is the purpose of the `waitForFunction` method in Playwright, and how is it used?  
+**Solution:**  
+It waits for a custom condition to be true:  
+```javascript  
+await page.waitForFunction(() => document.title === 'Expected Title');  
+```  
+
+### 22. Explain `WaitFor()` in Playwright.  
+**Solution:**  
+`WaitFor()` waits for specific conditions like element visibility or network idle.  
+
+### 23. How to perform scrolling in Playwright?  
+**Solution:**  
+Use the `evaluate()` method:  
+```javascript  
+await page.evaluate(() => window.scrollBy(0, 500));  
+```  
+
+### 24. How to retry failed test cases in Playwright?  
+**Solution:**  
+Use the `retries` option in the configuration file:  
+```javascript  
+retries: 2  
+```  
+
+### 25. Name a few Playwright exceptions.  
+**Solution:**  
+- TimeoutError  
+- ElementHandleError  
+- NavigationError  
+
+### 26. How to save a screenshot to the path?  
+**Solution:**  
+```javascript  
+await page.screenshot({ path: 'screenshot.png' });  
+```  
+
+### 27. How to take partial screenshots with the Playwright?  
+**Solution:**  
+```javascript  
+await page.locator('selector').screenshot({ path: 'partial.png' });  
+```  
+
+### 28. What is Browser Context in Playwright?  
+**Solution:**  
+A browser context is an isolated environment for running tests, similar to an incognito window.  
+
+### 29. How to automate alert popups in Playwright?  
+**Solution:**  
+Use the `on('dialog')` event:  
+```javascript  
+page.on('dialog', dialog => dialog.accept());  
+```  
+
+### 30. How do I run tests parallel in the Playwright framework?  
+**Solution:**  
+Set `workers` in the configuration file:  
+```javascript  
+workers: 4  
+```  
+
+### 31. How to execute Playwright tests in parallel mode from a single test file?  
+**Solution:**  
+Use the `test.describe.parallel` block.  
+
+### 32. How to execute Playwright tests in Serial mode from a single test file?  
+**Solution:**  
+Use the `test.describe.serial` block.  
+
+### 33. How to download a file using Playwright?  
+**Solution:**  
+```javascript  
+const [download] = await Promise.all([  
+    page.waitForEvent('download'),  
+    page.click('selector')  
+]);  
+await download.saveAs('filePath');  
+```  
+
+### 34. How to attach a file in the HTML report?  
+**Solution:**  
+Use the `attachments` property in the test results.  
+
+### 35. How to generate and share the Allure report/HTML report in the Playwright framework?  
+**Solution:**  
+Install the Allure plugin and configure it in the `playwright.config.ts` file.  

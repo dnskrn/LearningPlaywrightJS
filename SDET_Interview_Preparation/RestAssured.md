@@ -186,3 +186,137 @@ Response resp = given().header("Authorization", "Bearer accessToken").when().get
 - REST (Representational State Transfer) is an architectural style for web services.  
 - It uses HTTP methods (GET, POST, PUT, DELETE) to interact with resources identified by URIs.  
 - Resources can be represented in formats like JSON, XML, or plain text.  
+
+# REST Assured Interview Questions and Answers
+
+### 1. WHAT PROTOCOL IS UTILIZED BY RESTFUL WEB SERVICES?  
+RESTful web services utilize the **HTTP/HTTPS** protocol for communication.
+
+### 2. WHAT IS REST ASSURED, AND WHY IS IT USED FOR API TESTING?  
+REST Assured is a Java library used for testing RESTful APIs. It simplifies the process of sending HTTP requests and validating responses.
+
+### 3. WHAT ARE THE ADVANTAGES OF USING REST ASSURED FOR API TESTING?  
+- Easy-to-use syntax for API testing.  
+- Supports BDD-style testing.  
+- Built-in support for JSON and XML parsing.  
+- Integration with testing frameworks like JUnit and TestNG.
+
+### 4. WHAT ARE THE DIFFERENT HTTP METHODS THAT REST ASSURED SUPPORTS?  
+REST Assured supports HTTP methods like **GET**, **POST**, **PUT**, **DELETE**, **PATCH**, **OPTIONS**, and **HEAD**.
+
+### 5. WHAT IS THE DIFFERENCE BETWEEN REST ASSURED AND OTHER API TESTING TOOLS?  
+REST Assured is a Java-based library, while tools like Postman are GUI-based. REST Assured is better suited for automation and integration with CI/CD pipelines.
+
+### 6. HOW DO YOU SEND A GET REQUEST USING REST ASSURED?  
+```java
+given().when().get("https://api.example.com/resource").then().statusCode(200);
+```
+
+### 7. HOW DO YOU VERIFY THE RESPONSE STATUS CODE IN REST ASSURED?  
+```java
+given().when().get("https://api.example.com/resource").then().assertThat().statusCode(200);
+```
+
+### 8. HOW DO YOU EXTRACT DATA FROM A RESPONSE IN REST ASSURED?  
+```java
+String value = given().when().get("https://api.example.com/resource").then().extract().path("key");
+```
+
+### 9. WHAT IS THE DIFFERENCE BETWEEN GIVEN() AND WHEN() IN REST ASSURED?  
+- **given()**: Sets up the request (headers, parameters, etc.).  
+- **when()**: Specifies the HTTP method to execute.
+
+### 10. WHAT IS THE MAXIMUM SIZE OF A PAYLOAD THAT CAN BE SENT VIA THE POST METHOD?  
+The maximum payload size depends on the server and client configurations, not REST Assured itself.
+
+### 11. DESCRIBE REST.  
+REST (Representational State Transfer) is an architectural style for designing networked applications using stateless communication and standard HTTP methods.
+
+### 12. CAN A GET QUERY BE MADE IN PLACE OF A PUT TO CREATE A RESOURCE?  
+No, **GET** is used for retrieving data, while **PUT** is used for creating or updating resources.
+
+### 13. EXPLAIN REST ASSURED METHOD CHAINING.  
+Method chaining in REST Assured allows combining multiple methods in a single statement for better readability and maintainability.
+
+### 14. NAME THE ESSENTIAL ELEMENTS OF AN HTTP RESPONSE.  
+- Status Code  
+- Headers  
+- Body (optional)  
+- Cookies (optional)
+
+### 15. WHAT IS JSONPATH IN REST ASSURED?  
+JSONPath is a syntax used to extract specific data from JSON responses.
+
+### 16. WHAT TECHNIQUE DOES CACHING USE?  
+Caching uses techniques like **ETags**, **Cache-Control headers**, and **Last-Modified headers**.
+
+### 17. WHAT IS CLIENT-SERVER ARCHITECTURE?  
+It is a design model where the client requests resources, and the server processes and responds to those requests.
+
+### 18. DESCRIBE JSON.  
+JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy to read and write.
+
+### 19. WHAT PROCEDURES AND TECHNIQUES ARE USED TO VERIFY THE REST API RESPONSE IN REST ASSURED?  
+- Validating status codes.  
+- Verifying response headers.  
+- Parsing and validating JSON or XML response bodies.
+
+### 20. WHY DOES REST ASSURED USE STATIC IMPORT?  
+Static imports simplify method calls, allowing direct access to methods like `given()`, `when()`, and `then()` without class references.
+
+### 21. DEFINE A RESOURCE IN REST.  
+A resource is any entity that can be identified by a URI, such as a user, file, or document.
+
+### 22. WHAT ARE THE BEST PRACTICES TO FOLLOW WHEN USING REST ASSURED FOR API TESTING?  
+- Use assertions for validation.  
+- Modularize test cases.  
+- Avoid hardcoding sensitive data.  
+- Log requests and responses for debugging.
+
+### 23. WHAT IS A RESTFUL WEB SERVICE'S PAYLOAD?  
+The payload is the data sent in the body of an HTTP request or response.
+
+### 24. HOW DO YOU EXTRACT THE VALUES OF JSON, AND HOW DO YOU VALIDATE RESPONSE?  
+Use `extract().path()` to extract values and `assertThat()` for validation.  
+```java
+String value = response.path("key");
+assertThat(value, equalTo("expectedValue"));
+```
+
+### 25. HOW MANY TYPES OF AUTHENTICATION ARE THERE IN POSTMAN/ REST-ASSURED?  
+Common types include:  
+- Basic Authentication  
+- OAuth 1.0/2.0  
+- Bearer Token  
+- API Key  
+- Digest Authentication
+
+### 26. WHAT ARE THE DEPENDENCIES FOR REST-ASSURED?  
+Add the following Maven dependency:  
+```xml
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <version>5.x.x</version>
+</dependency>
+```
+
+### 27. WHY WOULD A PROGRAMMER USE REST ASSURED TO AUTOMATE RESTFUL SERVICES INSTEAD OF POSTMAN?  
+REST Assured is better for automation, CI/CD integration, and supports programmatic assertions.
+
+### 28. HOW IS CHAINING CARRIED OUT IN REST ASSURED?  
+Chaining is done by linking methods like `given()`, `when()`, and `then()` in a single statement.
+
+### 29. WHAT ARE SERIALIZATION AND DESERIALIZATION IN REST ASSURED?  
+- **Serialization**: Converting Java objects to JSON/XML.  
+- **Deserialization**: Converting JSON/XML to Java objects.
+
+### 30. WHAT IS THE BEST WAY TO KEEP SENSITIVE DATA OUT OF THE LOG IN REST ASSURED?  
+Use filters to mask sensitive data or avoid logging headers/body containing sensitive information.
+
+### 31. HOW DOES REST ASSURED WORK INTERNALLY?  
+REST Assured builds HTTP requests, sends them to the server, and parses the response for validation.
+
+### 32. HOW DO YOU EXPLAIN THE REST ASSURED FRAMEWORK IN AN INTERVIEW?  
+REST Assured is a Java-based library for automating RESTful API testing. It simplifies HTTP request handling, response validation, and supports BDD-style syntax.
+

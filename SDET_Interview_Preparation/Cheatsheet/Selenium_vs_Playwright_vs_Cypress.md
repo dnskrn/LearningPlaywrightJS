@@ -1,6 +1,10 @@
+
 ---
+
 *From Copilot*
+
 ---
+
 # Documentation Comment: Choosing Between Playwright, Selenium, and Cypress
 
 ## Overview
@@ -89,9 +93,15 @@ The final decision should align with the team's goals, project requirements, and
 
 
 
+
 ---
+
+
 *From Gemini*
+
 ---
+
+
 
 
 
@@ -161,9 +171,14 @@ Choosing between Playwright, Selenium, and Cypress is a crucial decision with si
 There's no single "best" framework. The ideal choice depends on your team's skills, project requirements, and long-term goals. A collaborative evaluation process is key to making the right decision.
 
 
+
 ---
+
 *From Chatgpt*
+
 ---
+
+
 
 
 # Choosing Between Playwright, Selenium, and Cypress

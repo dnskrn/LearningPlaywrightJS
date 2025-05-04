@@ -167,6 +167,223 @@ ResponseSpecification responseSpec = new ResponseSpecBuilder()
     - **304**: The resource has not been modified since the last request, so no new data is returned.  
 
 
+# Rest Assured – Interfaces, Functions, and Usage Examples
+
+Rest Assured is a popular Java library for testing RESTful APIs. It provides a domain-specific language (DSL) for writing powerful and readable tests for REST services.
+
+---
+
+## 1. BaseURI and BasePath
+
+### Description:
+Set the base URI and base path globally for all API requests.
+
+### Example:
+```java
+RestAssured.baseURI = "https://api.example.com";
+RestAssured.basePath = "/v1/users";
+```
+
+---
+
+## 2. Given / When / Then Syntax (BDD Style)
+
+### Description:
+BDD-style syntax makes the tests readable and structured.
+
+### Example:
+```java
+given()
+    .header("Authorization", "Bearer token")
+.when()
+    .get("/users")
+.then()
+    .statusCode(200);
+```
+
+---
+
+## 3. RequestSpecification Interface
+
+### Description:
+Used to build reusable request specifications.
+
+### Example:
+```java
+RequestSpecification reqSpec = given()
+    .baseUri("https://api.example.com")
+    .header("Content-Type", "application/json");
+
+reqSpec.when().get("/users").then().statusCode(200);
+```
+
+---
+
+## 4. Response Interface
+
+### Description:
+Used to extract and validate response data.
+
+### Example:
+```java
+Response response = 
+    given().when().get("/users");
+    
+String body = response.getBody().asString();
+int statusCode = response.getStatusCode();
+```
+
+---
+
+## 5. ValidatableResponse Interface
+
+### Description:
+Provides methods to validate the response in a fluent manner.
+
+### Example:
+```java
+given()
+    .when().get("/users")
+    .then().assertThat()
+    .statusCode(200)
+    .body("size()", greaterThan(0));
+```
+
+---
+
+## 6. Path Parameters
+
+### Description:
+Used to pass path variables in endpoints.
+
+### Example:
+```java
+given()
+    .pathParam("userId", 10)
+.when()
+    .get("/users/{userId}")
+.then()
+    .statusCode(200);
+```
+
+---
+
+## 7. Query Parameters
+
+### Description:
+Used to pass parameters in the query string.
+
+### Example:
+```java
+given()
+    .queryParam("page", 2)
+    .queryParam("limit", 10)
+.when()
+    .get("/users")
+.then()
+    .statusCode(200);
+```
+
+---
+
+## 8. Sending JSON Payload (POST/PUT)
+
+### Example:
+```java
+String jsonBody = "{ "name": "John", "job": "Engineer" }";
+
+given()
+    .header("Content-Type", "application/json")
+    .body(jsonBody)
+.when()
+    .post("/users")
+.then()
+    .statusCode(201);
+```
+
+---
+
+## 9. Authentication (Basic & OAuth2)
+
+### Basic Auth:
+```java
+given()
+    .auth().basic("username", "password")
+.when()
+    .get("/secure")
+.then()
+    .statusCode(200);
+```
+
+### OAuth2:
+```java
+given()
+    .auth().oauth2("accessToken")
+.when()
+    .get("/profile")
+.then()
+    .statusCode(200);
+```
+
+---
+
+## 10. Extracting Values from Response
+
+### Example:
+```java
+String name = given()
+    .when().get("/users/1")
+    .then().extract().path("name");
+```
+
+---
+
+## 11. Logging Request and Response
+
+### Example:
+```java
+given()
+    .log().all()
+.when()
+    .get("/users")
+.then()
+    .log().body()
+    .statusCode(200);
+```
+
+---
+
+## 12. JSON Schema Validation
+
+### Example:
+```java
+given()
+    .when().get("/users")
+.then()
+    .assertThat()
+    .body(matchesJsonSchemaInClasspath("user-schema.json"));
+```
+
+---
+
+## Summary Table
+
+| Interface / Function       | Description                                     |
+|----------------------------|-------------------------------------------------|
+| `RestAssured.baseURI`      | Set base URI for API                            |
+| `RequestSpecification`     | Build reusable request settings                 |
+| `Response`                 | Handle API responses                            |
+| `ValidatableResponse`      | Fluent validation for response                  |
+| `given().when().then()`    | BDD-style syntax                                |
+| `.pathParam()`             | Set path parameter                              |
+| `.queryParam()`            | Set query parameter                             |
+| `.auth().basic()`          | Basic authentication                            |
+| `.auth().oauth2()`         | OAuth2 token-based authentication               |
+| `.extract().path()`        | Extract fields from JSON                        |
+| `.log().all()/body()`      | Log requests and responses                      |
+| `matchesJsonSchemaInClasspath()` | Validate JSON response against schema    |
+
+
 ## Common Interview Questions  
 - What is REST Assured and why is it useful for API testing?  
 - Explain the basic structure of a REST Assured test.  

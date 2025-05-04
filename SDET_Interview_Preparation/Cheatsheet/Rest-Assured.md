@@ -272,7 +272,7 @@ given()
 
 ### Description:
 Used to pass parameters in the query string.
-It's a neat way to filter, sort, or paginate data without having to change the actual structure of the URL path. So, instead of having separate endpoints like /users/page/2/limit/10, you keep it clean with /users?page=2&limit=10. Makes things much more organized, doesn't it?
+It's a neat way to filter, sort, or paginate data without having to change the actual structure of the URL path. So, instead of having separate endpoints like **/users/page/2/limit/10**, you keep it clean with **/users?page=2&limit=10**. Makes things much more organized, doesn't it?
 
 ### Example:
 ```java

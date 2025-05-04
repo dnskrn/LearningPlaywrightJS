@@ -384,6 +384,278 @@ given()
 | `matchesJsonSchemaInClasspath()` | Validate JSON response against schema    |
 
 
+# JSON and XML Serialization/Deserialization with Rest-Assured (Java)
+
+This document provides a detailed example of how to handle JSON and XML serialization and deserialization for requests and responses in Java using the Rest-Assured library.
+
+## 1. Dependencies
+
+Ensure you have the following dependencies in your `pom.xml` (if using Maven):
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>5.3.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.16.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>7.8.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-xml</artifactId>
+        <version>2.16.1</version>
+    </dependency>
+</dependencies>
+```
+
+---
+
+## 2. JSON Serialization/Deserialization
+
+### 2.1 JSON Serialization
+
+**Concept**: Converting a Java object into a JSON string to send in a request body.
+
+**Example**:
+
+```java
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
+class Person {
+    private String name;
+    private int age;
+
+    public Person() {} // Required for Jackson
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public void setName(String name) { this.name = name; }
+    public void setAge(int age) { this.age = age; }
+}
+
+public class JsonSerializationTest {
+
+    @Test
+    public void testJsonSerialization() throws IOException {
+        RestAssured.baseURI = "https://reqres.in";
+
+        Person person = new Person("Alice", 30);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody = objectMapper.writeValueAsString(person);
+
+        System.out.println("Request Body (JSON): " + jsonBody);
+
+        Response response = given()
+                .header("Content-Type", "application/json")
+                .body(jsonBody)
+                .when()
+                .post("/api/users");
+
+        response.then().statusCode(201);
+        System.out.println("Response: " + response.prettyPrint());
+    }
+}
+```
+
+---
+
+### 2.2 JSON Deserialization
+
+**Concept**: Converting a JSON response body into a Java object.
+
+**Example**:
+
+```java
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import static org.testng.Assert.assertEquals;
+
+public class JsonDeserializationTest {
+
+    @Test
+    public void testJsonDeserialization() throws IOException {
+        RestAssured.baseURI = "https://reqres.in";
+
+        Response response = given()
+                .when()
+                .get("/api/users/2");
+
+        response.then().statusCode(200);
+
+        String jsonResponse = response.getBody().asString();
+        System.out.println("Response Body (JSON): " + jsonResponse);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        class UserData {
+            private int id;
+            private String email;
+            private String first_name;
+            private String last_name;
+            private String avatar;
+
+            public int getId() { return id; }
+            public String getEmail() { return email; }
+            public String getFirstName() { return first_name; }
+            public String getLastName() { return last_name; }
+            public String getAvatar() { return avatar; }
+        }
+
+        class UserResponse {
+            private UserData data;
+
+            public UserData getData() { return data; }
+        }
+
+        UserResponse userResponse = objectMapper.readValue(jsonResponse, UserResponse.class);
+
+        System.out.println("Deserialized Object: " + userResponse.getData().getFirstName());
+        assertEquals(userResponse.getData().getId(), 2);
+        assertEquals(userResponse.getData().getFirstName(), "Janet");
+    }
+}
+```
+
+---
+
+## 3. XML Serialization/Deserialization
+
+### 3.1 XML Serialization
+
+**Concept**: Converting a Java object into an XML string for use as a request.
+
+**Example**:
+
+```java
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.IOException;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlRootElement(name = "Person")
+class PersonXml {
+    private String name;
+    private int age;
+
+    public PersonXml() {}
+
+    public PersonXml(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @XmlElement(name = "Name")
+    public String getName() { return name; }
+    @XmlElement(name = "Age")
+    public int getAge() { return age; }
+}
+
+public class XmlSerializationTest {
+
+    @Test
+    public void testXmlSerialization() throws IOException {
+        RestAssured.baseURI = "https://reqres.in";
+
+        PersonXml person = new PersonXml("Bob", 25);
+        XmlMapper xmlMapper = new XmlMapper();
+        String xmlBody = xmlMapper.writeValueAsString(person);
+
+        System.out.println("Request Body (XML):\n" + xmlBody);
+
+        Response response = given()
+                .header("Content-Type", "application/xml")
+                .body(xmlBody)
+                .when()
+                .post("/api/users");
+
+        response.then().statusCode(201);
+        System.out.println("Response:\n" + response.prettyPrint());
+    }
+}
+```
+
+---
+
+### 3.2 XML Deserialization
+
+**Concept**: Converting an XML response body into a Java object.
+
+**Example**:
+
+```java
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlRootElement(name = "Response")
+class ResponseXml {
+    private Status status;
+    private Message message;
+
+    @XmlElement(name = "Status")
+    public Status getStatus() { return status; }
+    @XmlElement(name = "Message")
+    public Message getMessage() { return message; }
+
+    @XmlRootElement(name = "Status")
+    static class Status {
+        private String value;
+        @XmlElement(name = "value")
+        public String getValue() { return value; }
+    }
+
+    @XmlRootElement(name = "Message")
+    static class Message {
+        private String value;
+        @XmlElement(name = "value")
+        public String getValue() { return value; }
+    }
+}
+
+public class XmlDeserializationTest {
+    @Test
+    public void testXmlDeserialization() throws IOException {
+        String xmlResponse = "<Response><Status><value>success</value></Status><Message><value>Resource created successfully</value></Message></Response>";
+
+        XmlMapper xmlMapper = new XmlMapper();
+        ResponseXml responseXml = xmlMapper.readValue(xmlResponse, ResponseXml.class);
+
+        System.out.println("Deserialized Object: " + responseXml.getStatus().getValue());
+    }
+}
+```
+
+---  
+
 ## Common Interview Questions  
 - What is REST Assured and why is it useful for API testing?  
 - Explain the basic structure of a REST Assured test.  

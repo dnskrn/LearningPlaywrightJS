@@ -100,13 +100,15 @@ await expect(page.locator('#my-dropdown')).toHaveValue('value1');
 ```  
 
 ## Waits (Handling Dynamic Content)  
+```javascript 
 - `await page.waitForSelector('#dynamic-element', { state: 'visible' });` Wait for element to be visible  
 - `await page.waitForSelector('#loading-spinner', { state: 'detached' });` Wait for element to be removed  
 - `await page.waitForTimeout(2000);` Wait for a fixed time (generally avoid for stability)  
 - `await page.waitForURL('https://example.com/dashboard');` Wait for URL to change  
 - `await page.waitForLoadState('domcontentloaded');` Wait for initial HTML to be loaded  
 - `await page.waitForLoadState('load');` Wait for all resources to be loaded  
-- `await page.waitForFunction(() => document.title === 'New Title');` Wait based on a JavaScript condition  
+- `await page.waitForFunction(() => document.title === 'New Title');` Wait based on a JavaScript condition
+```
 
 ## Frames and Popups  
 ### Frames (iframes)  

@@ -27,47 +27,47 @@ main();
 
 ## Locators (Finding Elements)  
 ```javascript 
- `await page.locator('#id');` By ID (CSS Selector)  
- `await page.locator('.class');` By Class (CSS Selector)  
- `await page.locator('text=Welcome');` By exact text  
- `await page.locator('text=Welc');` By substring text  
- `await page.locator('button:has-text("Click Me")');` Text within an element  
- `await page.locator('a[href="/about"]');` By attribute (CSS Selector)  
- `await page.locator('xpath=//button[@id="submit"]');` By XPath (less preferred)  
- `await page.locator(':nth-match(div, 2)');` Nth matching element (Playwright-specific)  
- `await page.locator(':scope > li');` Direct children (Playwright-specific)  
- `await page.locator('button').first();`  
- `await page.locator('button').last();`  
- `await page.locator('li').nth(2);` Get the third list item (0-based index)  
- `await page.locator('input[name="username"]').fill('testuser');` Combined action and locator  
- `await page.locator('label:has-text("Email") input');` Find input within a label  
- `await page.getByRole('button', { name: 'Submit' });` Semantic role-based selector  
- `await page.getByText('Click Here');` Get by visible text content  
- `await page.getByLabel('Username');`  
- `await page.getByPlaceholder('Enter your email');`  
- `await page.getByAltText('Logo');`  
- `await page.getByTitle('Homepage');`  
+ await page.locator('#id'); By ID (CSS Selector)  
+ await page.locator('.class'); By Class (CSS Selector)  
+ await page.locator('text=Welcome'); By exact text  
+ await page.locator('text=Welc'); By substring text  
+ await page.locator('button:has-text("Click Me")'); Text within an element  
+ await page.locator('a[href="/about"]'); By attribute (CSS Selector)  
+ await page.locator('xpath=//button[@id="submit"]'); By XPath (less preferred)  
+ await page.locator(':nth-match(div, 2)');// Nth matching element (Playwright-specific)  
+ await page.locator(':scope > li');// Direct children (Playwright-specific)  
+ await page.locator('button').first();//  
+ await page.locator('button').last();//  
+ await page.locator('li').nth(2);// Get the third list item (0-based index)  
+ await page.locator('input[name="username"]').fill('testuser');// Combined action and locator  
+ await page.locator('label:has-text("Email") input');// Find input within a label  
+ await page.getByRole('button', { name: 'Submit' });// Semantic role-based selector  
+ await page.getByText('Click Here');// Get by visible text content  
+ await page.getByLabel('Username');//  
+ await page.getByPlaceholder('Enter your email');//  
+ await page.getByAltText('Logo');//  
+ await page.getByTitle('Homepage');//  
 ```
 ## Basic Actions  
 ```javascript 
- `await page.goto('https://example.com');` Navigate to a URL  
- `const title = await page.title();` Get page title  
- `const url = await page.url();` Get current URL  
- `await page.click('#submit-button');` Click an element  
- `await page.fill('#username', 'testuser');` Fill an input field  
- `await page.type('#password', 'secure');` Type text (simulates user typing)  
- `await page.check('#remember-me');` Check a checkbox  
- `await page.uncheck('#remember-me');` Uncheck a checkbox  
- `await page.selectOption('#dropdown', 'value1');` Select dropdown option by value  
- `await page.selectOption('#dropdown', { label: 'Option Text' });` Select by label  
- `await page.selectOption('#dropdown', { index: 2 });` Select by index  
- `await page.hover('#menu-item');` Hover over an element  
- `await page.press('Enter');` Press a keyboard key  
- `await page.press('Shift+Tab');` Press multiple keys  
- `await page.setInputFiles('#file-upload', 'path/to/file.txt');` Upload a file  
- `await page.goBack();`  
- `await page.goForward();`  
- `await page.reload();`  
+ await page.goto('https://example.com');// Navigate to a URL  
+ const title = await page.title();// Get page title  
+ const url = await page.url();// Get current URL  
+ await page.click('#submit-button');// Click an element  
+ await page.fill('#username', 'testuser');// Fill an input field  
+ await page.type('#password', 'secure');// Type text (simulates user typing)  
+ await page.check('#remember-me');// Check a checkbox  
+ await page.uncheck('#remember-me');// Uncheck a checkbox  
+ await page.selectOption('#dropdown', 'value1');// Select dropdown option by value  
+ await page.selectOption('#dropdown', { label: 'Option Text' });// Select by label  
+ await page.selectOption('#dropdown', { index: 2 });// Select by index  
+ await page.hover('#menu-item');// Hover over an element  
+ await page.press('Enter');// Press a keyboard key  
+ await page.press('Shift+Tab');// Press multiple keys  
+ await page.setInputFiles('#file-upload', 'path/to/file.txt');// Upload a file  
+ await page.goBack();//  
+ await page.goForward();//  
+ await page.reload();  
 ```
 
 ## File Download and Upload  
@@ -104,13 +104,13 @@ await expect(page.locator('#my-dropdown')).toHaveValue('value1');
 
 ## Waits (Handling Dynamic Content)  
 ```javascript 
- `await page.waitForSelector('#dynamic-element', { state: 'visible' });` Wait for element to be visible  
- `await page.waitForSelector('#loading-spinner', { state: 'detached' });` Wait for element to be removed  
- `await page.waitForTimeout(2000);` Wait for a fixed time (generally avoid for stability)  
- `await page.waitForURL('https://example.com/dashboard');` Wait for URL to change  
- `await page.waitForLoadState('domcontentloaded');` Wait for initial HTML to be loaded  
- `await page.waitForLoadState('load');` Wait for all resources to be loaded  
- `await page.waitForFunction(() => document.title === 'New Title');` Wait based on a JavaScript condition
+await page.waitForSelector('#dynamic-element', { state: 'visible' });// Wait for element to be visible  
+await page.waitForSelector('#loading-spinner', { state: 'detached' });// Wait for element to be removed  
+await page.waitForTimeout(2000);// Wait for a fixed time (generally avoid for stability)  
+await page.waitForURL('https://example.com/dashboard');// Wait for URL to change  
+await page.waitForLoadState('domcontentloaded');// Wait for initial HTML to be loaded  
+await page.waitForLoadState('load');// Wait for all resources to be loaded  
+await page.waitForFunction(() => document.title === 'New Title');// Wait based on a JavaScript condition
 ```
 
 ## Frames and Popups  

@@ -75,3 +75,129 @@ public class TestCustomException {
 - Exceptions improve code robustness.
 - Always clean up resources in `finally` or use try-with-resources.
 - Avoid overusing exceptions for control flow.
+
+# Try-Catch with Resources - Interview Cheatsheet
+
+## Overview
+The `try-catch` block is used for exception handling in programming. When working with resources (e.g., files, database connections), it is essential to ensure proper resource management to avoid memory leaks or resource locking.
+
+---
+
+## Syntax
+
+### Basic Try-Catch
+```java
+try {
+  // Code that may throw an exception
+} catch (ExceptionType e) {
+  // Handle exception
+}
+```
+
+### Try-Catch-Finally
+```java
+try {
+  // Code that may throw an exception
+} catch (ExceptionType e) {
+  // Handle exception
+} finally {
+  // Code that always executes (e.g., cleanup)
+}
+```
+
+### Try-With-Resources (Java)
+```java
+try (ResourceType resource = new ResourceType()) {
+  // Code that uses the resource
+} catch (ExceptionType e) {
+  // Handle exception
+}
+// Resource is automatically closed
+```
+
+---
+
+## Key Points
+1. **Try-Catch**:
+   - Use `try` to wrap code that may throw exceptions.
+   - Use `catch` to handle specific exceptions.
+   - Multiple `catch` blocks can be used for different exception types.
+
+2. **Finally**:
+   - The `finally` block always executes, even if an exception is thrown.
+   - Ideal for cleanup tasks like closing files or releasing locks.
+
+3. **Try-With-Resources**:
+   - Introduced in Java 7.
+   - Automatically closes resources that implement the `AutoCloseable` interface.
+   - Reduces boilerplate code for resource management.
+
+---
+
+## Examples
+
+### Example 1: Basic Try-Catch
+```java
+try {
+  int result = 10 / 0; // Throws ArithmeticException
+} catch (ArithmeticException e) {
+  System.out.println("Cannot divide by zero: " + e.getMessage());
+}
+```
+
+### Example 2: Try-Catch-Finally
+```java
+FileReader reader = null;
+try {
+  reader = new FileReader("file.txt");
+  // Read file
+} catch (IOException e) {
+  System.out.println("Error reading file: " + e.getMessage());
+} finally {
+  if (reader != null) {
+    try {
+      reader.close();
+    } catch (IOException e) {
+      System.out.println("Error closing file: " + e.getMessage());
+    }
+  }
+}
+```
+
+### Example 3: Try-With-Resources
+```java
+try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
+  String line;
+  while ((line = br.readLine()) != null) {
+    System.out.println(line);
+  }
+} catch (IOException e) {
+  System.out.println("Error: " + e.getMessage());
+}
+```
+
+---
+
+## Best Practices
+1. Use specific exception types in `catch` blocks instead of generic `Exception`.
+2. Always close resources in `finally` or use try-with-resources.
+3. Avoid empty `catch` blocks; log or handle exceptions appropriately.
+4. Do not suppress exceptions unless absolutely necessary.
+5. Use meaningful messages when throwing or logging exceptions.
+
+---
+
+## Common Interview Questions
+1. What is the purpose of the `finally` block?
+2. How does try-with-resources work in Java?
+3. What happens if an exception is thrown in the `finally` block?
+4. Can you nest `try-catch` blocks? Provide an example.
+5. What is the difference between checked and unchecked exceptions?
+
+---
+
+## Additional Resources
+- [Java Documentation: Try-Catch](https://docs.oracle.com/javase/tutorial/essential/exceptions/try.html)
+- [Effective Java by Joshua Bloch](https://www.oreilly.com/library/view/effective-java/9780134686097/)
+- [Exception Handling Best Practices](https://www.baeldung.com/java-exceptions)
+
